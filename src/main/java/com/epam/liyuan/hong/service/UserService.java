@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.epam.liyuan.hong.dao.ItemDao;
+import com.epam.liyuan.hong.dao.UserDao;
 import com.epam.liyuan.hong.model.User;
 
 @Service
 public class UserService {
 
-	private ItemDao itemRepo;
+	private UserDao userDao;
 
 	public Optional<User> getUserById(long userId) {
 		return Optional.ofNullable(retrieveUser(u -> u.getId() == userId).get(0));
@@ -30,7 +30,7 @@ public class UserService {
 	}
 
 	private List<User> retrieveUser(Predicate<User> predicate) {
-		return itemRepo.getAllUsers().stream().filter(predicate).collect(Collectors.toList());
+		return userDao.getAllUsers().stream().filter(predicate).collect(Collectors.toList());
 	}
 
 	private List<User> getPagedUsers(List<User> events, int pageSize, int pageNum) {
@@ -40,7 +40,7 @@ public class UserService {
 	}
 
 	public User createUser(User user) {
-		itemRepo.saveUser(user);
+		userDao.saveUser(user);
 		return user;
 	}
 
@@ -48,12 +48,12 @@ public class UserService {
 		if (getUserById(user.getId()).isEmpty()) {
 			return null;
 		}
-		itemRepo.saveUser(user);
+		userDao.saveUser(user);
 		return user;
 	}
 
 	public boolean deleteUser(long userId) {
-		return itemRepo.deleteUser(userId);
+		return userDao.deleteUser(userId);
 	}
 
 }

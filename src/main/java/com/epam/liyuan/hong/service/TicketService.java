@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.epam.liyuan.hong.dao.ItemDao;
+import com.epam.liyuan.hong.dao.TicketDao;
 import com.epam.liyuan.hong.model.Event;
 import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.User;
@@ -15,7 +15,7 @@ import com.epam.liyuan.hong.model.User;
 @Service
 public class TicketService {
 
-	private ItemDao itemDao;
+	private TicketDao ticketDao;
 
 	private EventService eventService;
 
@@ -27,7 +27,8 @@ public class TicketService {
 			throw new IllegalStateException("This place has already been booked");
 		}
 		Ticket ticket = new Ticket(userId, eventId, category, place);
-		return itemDao.saveTicket(ticket);
+		ticketDao.saveTicket(ticket);
+		return ticket;
 	}
 
 	public List<Ticket> getBookedTickets(User user, int pageSize, int pageNum) {
@@ -47,7 +48,7 @@ public class TicketService {
 	}
 
 	private List<Ticket> retrieveTickets(Predicate<Ticket> predicate) {
-		return itemDao.getAllTickets().stream().filter(predicate).collect(Collectors.toList());
+		return ticketDao.getAllTickets().stream().filter(predicate).collect(Collectors.toList());
 	}
 
 	private List<Ticket> getPagedEvents(List<Ticket> tickets, int pageSize, int pageNum) {
@@ -61,7 +62,7 @@ public class TicketService {
 		if (ticket.isEmpty()) {
 			return false;
 		}
-		itemDao.deleteTicket(ticketId);
+		ticketDao.deleteTicket(ticketId);
 		return true;
 	}
 

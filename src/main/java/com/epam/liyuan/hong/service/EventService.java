@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.epam.liyuan.hong.dao.ItemDao;
+import com.epam.liyuan.hong.dao.EventDao;
 import com.epam.liyuan.hong.model.Event;
 
 @Service
 public class EventService {
 
-	private ItemDao itemDao;
+	private EventDao eventDao;
 
 	public Optional<Event> getEventById(long eventId) {
 		return Optional.ofNullable(retrieveEvent(e -> eventId == e.getId()).get(0));
@@ -32,7 +32,7 @@ public class EventService {
 	}
 
 	private List<Event> retrieveEvent(Predicate<Event> predicate) {
-		return itemDao.getAllEvents().stream().filter(predicate).collect(Collectors.toList());
+		return eventDao.getAllEvents().stream().filter(predicate).collect(Collectors.toList());
 	}
 
 	private List<Event> getPagedEvents(List<Event> events, int pageSize, int pageNum) {
@@ -42,7 +42,7 @@ public class EventService {
 	}
 
 	public Event createEvent(Event event) {
-		itemDao.saveEvent(event);
+		eventDao.saveEvent(event);
 		return event;
 	}
 
@@ -50,11 +50,11 @@ public class EventService {
 		if (getEventById(event.getId()).isEmpty()) {
 			return null;
 		}
-		itemDao.saveEvent(event);
+		eventDao.saveEvent(event);
 		return event;
 	}
 
 	public boolean deleteEvent(long eventId) {
-		return itemDao.deleteEvent(eventId);
+		return eventDao.deleteEvent(eventId);
 	}
 }
