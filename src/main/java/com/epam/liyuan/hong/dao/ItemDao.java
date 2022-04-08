@@ -1,4 +1,4 @@
-package com.epam.liyuan.hong.repository;
+package com.epam.liyuan.hong.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.User;
 
 @Component
-public class ItemRepo {
+public class ItemDao {
 
 	public void saveEvent(Event event) {
 		// TODO Auto-generated method stub

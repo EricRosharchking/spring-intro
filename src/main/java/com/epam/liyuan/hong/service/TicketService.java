@@ -7,22 +7,26 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.epam.liyuan.hong.dao.ItemDao;
 import com.epam.liyuan.hong.model.Event;
 import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.User;
-import com.epam.liyuan.hong.repository.ItemRepo;
 
 @Service
-public class TickertService {
+public class TicketService {
 
-	@Autowired
-	private ItemRepo itemRepo;
+	private ItemDao itemDao;
 
-	@Autowired
 	private EventService eventService;
 
-	@Autowired
 	private UserService userService;
+
+	public TicketService(ItemDao itemDao, EventService eventService, UserService userService) {
+		super();
+		this.itemDao = itemDao;
+		this.eventService = eventService;
+		this.userService = userService;
+	}
 
 	public Ticket bookTicket(long userId, long eventId, int place, Ticket.Category category)
 			throws IllegalStateException {
@@ -30,7 +34,7 @@ public class TickertService {
 			throw new IllegalStateException("This place has already been booked");
 		}
 		Ticket ticket = new Ticket(userId, eventId, category, place);
-		return itemRepo.saveTicket(ticket);
+		return itemDao.saveTicket(ticket);
 	}
 
 	public List<Ticket> getBookedTickets(User user, int pageSize, int pageNum) {
@@ -50,7 +54,7 @@ public class TickertService {
 	}
 
 	private List<Ticket> retrieveTickets(Predicate<Ticket> predicate) {
-		return itemRepo.getAllTickets().stream().filter(predicate).collect(Collectors.toList());
+		return itemDao.getAllTickets().stream().filter(predicate).collect(Collectors.toList());
 	}
 
 	private List<Ticket> getPagedEvents(List<Ticket> tickets, int pageSize, int pageNum) {
@@ -64,7 +68,7 @@ public class TickertService {
 		if (ticket.isEmpty()) {
 			return false;
 		}
-		itemRepo.deleteTicket(ticketId);
+		itemDao.deleteTicket(ticketId);
 		return true;
 	}
 
