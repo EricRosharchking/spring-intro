@@ -16,11 +16,6 @@ public class UserService {
 
 	private ItemDao itemRepo;
 
-	public UserService(ItemDao itemRepo) {
-		super();
-		this.itemRepo = itemRepo;
-	}
-
 	public Optional<User> getUserById(long userId) {
 		return Optional.ofNullable(retrieveUser(u -> u.getId() == userId).get(0));
 	}

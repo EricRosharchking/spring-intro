@@ -16,10 +16,6 @@ import com.epam.liyuan.hong.model.Event;
 public class EventService {
 
 	private ItemDao itemDao;
-	
-	public EventService(ItemDao itemDao) {
-		this.itemDao = itemDao;
-	}
 
 	public Optional<Event> getEventById(long eventId) {
 		return Optional.ofNullable(retrieveEvent(e -> eventId == e.getId()).get(0));

@@ -21,13 +21,6 @@ public class TicketService {
 
 	private UserService userService;
 
-	public TicketService(ItemDao itemDao, EventService eventService, UserService userService) {
-		super();
-		this.itemDao = itemDao;
-		this.eventService = eventService;
-		this.userService = userService;
-	}
-
 	public Ticket bookTicket(long userId, long eventId, int place, Ticket.Category category)
 			throws IllegalStateException {
 		if (!retrieveTickets(t -> t.getPlace() == place).isEmpty()) {
