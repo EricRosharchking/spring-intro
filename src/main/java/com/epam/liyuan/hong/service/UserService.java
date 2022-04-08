@@ -8,14 +8,18 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.epam.liyuan.hong.dao.ItemDao;
 import com.epam.liyuan.hong.model.User;
-import com.epam.liyuan.hong.repository.ItemRepo;
 
 @Service
 public class UserService {
 
-	@Autowired
-	private ItemRepo itemRepo;
+	private ItemDao itemRepo;
+
+	public UserService(ItemDao itemRepo) {
+		super();
+		this.itemRepo = itemRepo;
+	}
 
 	public Optional<User> getUserById(long userId) {
 		return Optional.ofNullable(retrieveUser(u -> u.getId() == userId).get(0));
