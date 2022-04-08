@@ -6,18 +6,31 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-  <!-- 2.DAO with storage bean should be inserted into services beans using 
+  <!-- 2. DAO with storage bean should be inserted into services beans using 
     auto wiring. Services beans should be injected into the facade using constructor-based 
     injections. The rest of the injections should be done in a setter-based way. 
     (1 point) -->
   <!-- bean definitions here -->
-  <bean id="facadeImpl"
-  class="com.epam.liyuan.hong.facade.impl.BookingImpl" autowire="byType">
+  <bean id="bookingImpl"
+    class="com.epam.liyuan.hong.facade.impl.BookingImpl">
+    <constructor-arg name="eventService"
+      ref="eventService" />
+    <constructor-arg name="ticketService"
+      ref="ticketService" />
+    <constructor-arg name="userService"
+      ref="userService" />
   </bean>
+
+
+  <bean id="ticketService"
+    class="com.epam.liyuan.hong.service.TicketService" autowire="byType"></bean>
 
   <bean id="eventService"
-    class="com.epam.liyuan.hong.service.EventService"
-    autowire="constructor">
+    class="com.epam.liyuan.hong.service.EventService" autowire="byType">
   </bean>
 
+  <bean id="userService"
+    class="com.epam.liyuan.hong.service.UserService" autowire="byType"></bean>
+
+  <bean id="itemDao" class="com.epam.liyuan.hong.dao.ItemDao"></bean>
 </beans>
