@@ -42,7 +42,7 @@ public class RepoTest {
 	private String eventsJson;
 
 	@Test
-	public void testWrite() {
+	public void testWriteEvents() {
 		Event event = new Event(1L, "test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
@@ -78,7 +78,7 @@ public class RepoTest {
 	}
 	
 	@Test
-	public void testRead() {
+	public void testReadEvents() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Event> map = new HashMap<>();
 		try {

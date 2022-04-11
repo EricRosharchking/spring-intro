@@ -19,11 +19,11 @@ which should contain user, event, and booking-related functionality accordingly.
 
 [x] 3. Implement DAO objects for each of the domain model entities (User, Event, Ticket). They should store in and retrieve data from a common in-memory storage - java map. Each entity should be stored under a separate namespace, so you could list particular entity types. (0.5 point)
 
-[ ] Example for ticket - map entry {"ticket:" à {}}.
+[x] Example for ticket - map entry {"ticket:" à {}}.
 
 E.g. {"ticket:12345" à {"id" : 12345, "place" : 23, ......}}
 
-[ ] 4. Storage should be implemented as a separate spring bean. Implement the ability to initialize storage with some prepared data from the file during the application start (use spring bean post-processing features). Path to the concrete file should be set using property placeholder and external property file. (1 point)
+[x] 4. Storage should be implemented as a separate spring bean. Implement the ability to initialize storage with some prepared data from the file during the application start (use spring bean post-processing features). Path to the concrete file should be set using property placeholder and external property file. (1 point)
 
 [x] 5. DAO with storage bean should be inserted into services beans using auto wiring. Services beans should be injected into the facade using constructor-based injections. The rest of the injections should be done in a setter-based way. (1 point)
 
