@@ -61,13 +61,26 @@ public class ItemRepo {
 		return null;
 	}
 
+	public Map<Long, Event> loadEventsWithAdapter() {
+		StringBuffer buffer = new StringBuffer();
+		try {
+			JsonElement element = JsonParser.parseReader(readJsonObjectFromResource(savedEventsResource));
+			Type type = new TypeToken<Map<Long, Event>>() {
+			}.getType();
+			Gson gson = new GsonBuilder().setDateFormat(DateFormat.DEFAULT)
+					.registerTypeAdapter(type, new EventTypeAdapter()).create();
+			return gson.fromJson(element, type);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public boolean saveEvents(Map<Long, Event> eventsMap) {
 //		JSONObject jsonObject = new JSONObject(eventsMap);
 		Type type = new TypeToken<Map<Long, Event>>() {
 		}.getType();
-		Gson gson = new GsonBuilder()
-				.setDateFormat(DateFormat.DEFAULT)
-				.create();
+		Gson gson = new GsonBuilder().setDateFormat(DateFormat.DEFAULT).create();
 		JsonElement element = gson.toJsonTree(eventsMap, type);
 		try {
 			writeJsonObjectToResource(element, savedEventsResource);
@@ -76,16 +89,14 @@ public class ItemRepo {
 			return false;
 		}
 		return true;
-	}	
-	
+	}
+
 	public boolean saveEventsWithAdapter(Map<Long, Event> eventsMap) {
 //		JSONObject jsonObject = new JSONObject(eventsMap);
 		Type type = new TypeToken<Map<Long, Event>>() {
 		}.getType();
-		Gson gson = new GsonBuilder()
-				.setDateFormat(DateFormat.DEFAULT)
-				.registerTypeAdapter(type, new EventTypeAdapter())
-				.create();
+		Gson gson = new GsonBuilder().setDateFormat(DateFormat.DEFAULT)
+				.registerTypeAdapter(type, new EventTypeAdapter()).create();
 		JsonElement element = gson.toJsonTree(eventsMap, type);
 		try {
 			writeJsonObjectToResource(element, savedEventsResource);

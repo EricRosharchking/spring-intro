@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <!-- 2. DAO with storage bean should be inserted into services beans using 
+    auto wiring. Services beans should be injected into the facade using constructor-based 
+    injections. The rest of the injections should be done in a setter-based way. 
+    (1 point) -->
+  <context:property-placeholder
+    location="app.properties" />
+  <context:component-scan
+    base-package="com.epam.liyuan.hong.repo" />
+  <!-- bean definitions here -->
+  <bean id="bookingImpl"
+    class="com.epam.liyuan.hong.facade.impl.BookingImpl">
+    <constructor-arg name="eventService"
+      ref="eventService" />
+    <constructor-arg name="ticketService"
+      ref="ticketService" />
+    <constructor-arg name="userService"
+      ref="userService" />
+  </bean>
+
+  <bean id="ticketService"
+    class="com.epam.liyuan.hong.service.TicketService" autowire="byType" />
+
+  <bean id="eventService"
+    class="com.epam.liyuan.hong.service.EventService" autowire="byType" />
+
+  <bean id="userService"
+    class="com.epam.liyuan.hong.service.UserService" autowire="byType" />
+
+  <bean id="eventDao" class="com.epam.liyuan.hong.dao.EventDao" />
+  <bean id="ticketDao" class="com.epam.liyuan.hong.dao.TicketDao" />
+  <bean id="userDao" class="com.epam.liyuan.hong.dao.UserDao" />
+  <!-- <bean id="pollableFileSource" class="org.springframework.integration.file.FileReadingMessageSource" 
+    p:inputDirectory="${input.directory}" /> -->
+  <bean id="itemRepo" class="com.epam.liyuan.hong.repo.ItemRepo">
+    <property name="savedEventsResource"
+      ref="eventFileResource" />
+    <property name="savedTicketsResource"
+      ref="ticketFileResource" />
+    <property name="savedUsersResource" ref="userFileResource" />
+  </bean>
+  <bean id="eventFileResource"
+    class="org.springframework.core.io.FileSystemResource">
+    <constructor-arg name="path"
+      value="${app.prepareddata.file.event}" />
+  </bean>
+  <bean id="ticketFileResource"
+    class="org.springframework.core.io.FileSystemResource">
+    <constructor-arg name="path"
+      value="${app.prepareddata.file.ticket}" />
+  </bean>
+  <bean id="userFileResource"
+    class="org.springframework.core.io.FileSystemResource">
+    <constructor-arg name="path"
+      value="${app.prepareddata.file.user}" />
+  </bean>
+</beans>

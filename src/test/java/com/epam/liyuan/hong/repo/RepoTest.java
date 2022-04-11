@@ -89,4 +89,17 @@ public class RepoTest {
 		}
 		assertNotNull(map.get(1L));
 	}
+	
+	@Test
+	public void tesReadWithAdapter() {
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		Map<Long, Event> map = new HashMap<>();
+		try {
+			map = itemRepo.loadEventsWithAdapter();
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		assertNotNull(map.get(1L));
+	}
 }

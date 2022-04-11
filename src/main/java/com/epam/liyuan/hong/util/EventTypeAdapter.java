@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,20 +46,47 @@ public class EventTypeAdapter extends TypeAdapter<Map<Long, Event>> {
 		Map<Long, Event> result = new HashMap<>();
 		in.beginObject();
 		while (in.hasNext()) {
-			in.beginObject();
+//			long id = Long.valueOf(in.nextName().substring("event:".length()));
+			String name = in.nextName();
+			System.out.println(name);
+			long id = Long.valueOf(name.substring("event:".length()));
 			try {
-				Event event = new Event(in.nextLong(), in.nextString(),
-						DateFormat.getDateInstance(DateFormat.DEFAULT).parse(in.nextString()));
-				result.put(event.getId(), event);
+				Event event = readEvent(in);
+				result.put(id, event);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				throw new IOException();
 			}
-			in.endObject();
 		}
 		in.endObject();
 		return result;
+	}
+
+	private Event readEvent(JsonReader in) throws IOException, ParseException {
+		long id = -1;
+		String title = null;
+		Date date = null;
+
+		in.beginObject();
+		while (in.hasNext()) {
+			String name = in.nextName();
+			switch (name) {
+			case "id":
+				id = in.nextLong();
+				break;
+			case "title":
+				title = in.nextString();
+				break;
+			case "date":
+				date = DateFormat.getDateInstance(DateFormat.DEFAULT).parse(in.nextString());
+				break;
+			default:
+				in.skipValue();
+			}
+		}
+		in.endObject();
+		return new Event(id, title, date);
 	}
 
 }
