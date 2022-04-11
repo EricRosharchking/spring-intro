@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+import org.json.JSONPropertyName;
 import org.springframework.data.annotation.Id;
 
 /**

@@ -8,8 +8,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -24,41 +27,68 @@ import org.springframework.data.annotation.Reference;
 import org.springframework.stereotype.Component;
 
 import com.epam.liyuan.hong.model.Event;
+import com.epam.liyuan.hong.util.EventTypeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 @Component
 public class ItemRepo {
 
-	@Autowired
-	@Qualifier(value = "eventFileResource")
+//	@Autowired
+//	@Qualifier(value = "eventFileResource")
 	private FileSystemResource savedEventsResource;
-	@Autowired
-	@Qualifier(value = "ticketFileResource")
+//	@Autowired
+//	@Qualifier(value = "ticketFileResource")
 	private FileSystemResource savedTicketsResource;
-	@Autowired
-	@Qualifier(value = "userFileResource")
+//	@Autowired
+//	@Qualifier(value = "userFileResource")
 	private FileSystemResource savedUsersResource;
 
 	public Map<Long, Event> loadEvents() {
-
 		StringBuffer buffer = new StringBuffer();
 		try {
 			JsonElement element = JsonParser.parseReader(readJsonObjectFromResource(savedEventsResource));
-			return (Map<Long, Event>) element;
+			Gson gson = new GsonBuilder().setDateFormat(SimpleDateFormat.FULL).create();
+			Type type = new TypeToken<Map<Long, Event>>() {
+			}.getType();
+			return gson.fromJson(element, type);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
 	public boolean saveEvents(Map<Long, Event> eventsMap) {
-
-		JSONObject jsonObject = new JSONObject(eventsMap);
-//		savedEventsResource.getOutputStream();
+//		JSONObject jsonObject = new JSONObject(eventsMap);
+		Type type = new TypeToken<Map<Long, Event>>() {
+		}.getType();
+		Gson gson = new GsonBuilder()
+				.setDateFormat(DateFormat.DEFAULT)
+				.create();
+		JsonElement element = gson.toJsonTree(eventsMap, type);
 		try {
-			writeJsonObjectToResource(jsonObject, savedEventsResource);
+			writeJsonObjectToResource(element, savedEventsResource);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}	
+	
+	public boolean saveEventsWithAdapter(Map<Long, Event> eventsMap) {
+//		JSONObject jsonObject = new JSONObject(eventsMap);
+		Type type = new TypeToken<Map<Long, Event>>() {
+		}.getType();
+		Gson gson = new GsonBuilder()
+				.setDateFormat(DateFormat.DEFAULT)
+				.registerTypeAdapter(type, new EventTypeAdapter())
+				.create();
+		JsonElement element = gson.toJsonTree(eventsMap, type);
+		try {
+			writeJsonObjectToResource(element, savedEventsResource);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -66,7 +96,7 @@ public class ItemRepo {
 		return true;
 	}
 
-	private boolean writeJsonObjectToResource(JSONObject jsonObject, WritableResource resource) throws Exception {
+	private boolean writeJsonObjectToResource(JsonElement jsonObject, WritableResource resource) throws Exception {
 		if (!(resource.exists() && resource.isFile())) {
 			System.out.println(resource.getDescription());
 			throw new RuntimeException("The file to save the Entities do not exist, or is not a file");
@@ -82,7 +112,6 @@ public class ItemRepo {
 	}
 
 	private BufferedReader readJsonObjectFromResource(Resource resource) throws Exception {
-
 		if (!(resource.exists() && resource.isFile())) {
 			System.out.println(resource.getDescription());
 			throw new RuntimeException("The file to save the Entities do not exist, or is not a file");
