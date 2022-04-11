@@ -87,7 +87,7 @@ public class RepoTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-		assertNotNull(map.get(1L));
+		assertNotNull(map.size() == 2);
 	}
 	
 	@Test

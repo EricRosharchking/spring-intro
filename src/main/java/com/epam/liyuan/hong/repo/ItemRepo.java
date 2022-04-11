@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,21 +50,25 @@ public class ItemRepo {
 	private FileSystemResource savedUsersResource;
 
 	public Map<Long, Event> loadEvents() {
-		StringBuffer buffer = new StringBuffer();
+//		StringBuffer buffer = new StringBuffer();
+		Map<String, Event> tempMap = new HashMap<>();
 		try {
 			JsonElement element = JsonParser.parseReader(readJsonObjectFromResource(savedEventsResource));
 			Gson gson = new GsonBuilder().setDateFormat(SimpleDateFormat.FULL).create();
-			Type type = new TypeToken<Map<Long, Event>>() {
+			Type type = new TypeToken<Map<String, Event>>() {
 			}.getType();
-			return gson.fromJson(element, type);
+			tempMap = gson.fromJson(element, type);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		Map<Long, Event> result = new HashMap<>();
+		tempMap.entrySet().stream()
+			.forEach(entry -> result.put(Long.valueOf(entry.getKey().substring("event:".length())), entry.getValue()));
+		return result;
 	}
 
 	public Map<Long, Event> loadEventsWithAdapter() {
-		StringBuffer buffer = new StringBuffer();
+//		StringBuffer buffer = new StringBuffer();
 		try {
 			JsonElement element = JsonParser.parseReader(readJsonObjectFromResource(savedEventsResource));
 			Type type = new TypeToken<Map<Long, Event>>() {
@@ -78,10 +84,14 @@ public class ItemRepo {
 
 	public boolean saveEvents(Map<Long, Event> eventsMap) {
 //		JSONObject jsonObject = new JSONObject(eventsMap);
-		Type type = new TypeToken<Map<Long, Event>>() {
+		Map<String, Event> tempMap = new HashMap<>();
+		Type type = new TypeToken<Map<String, Event>>() {
 		}.getType();
+		for (Entry<Long, Event> entry : eventsMap.entrySet()) {
+			tempMap.put("event:"+entry.getKey(), entry.getValue());
+		}
 		Gson gson = new GsonBuilder().setDateFormat(DateFormat.DEFAULT).create();
-		JsonElement element = gson.toJsonTree(eventsMap, type);
+		JsonElement element = gson.toJsonTree(tempMap, type);
 		try {
 			writeJsonObjectToResource(element, savedEventsResource);
 		} catch (Exception e) {
