@@ -53,7 +53,7 @@ public class RepoTest {
 	}
 
 	@Test
-	public void testWriteEvents() {
+	public void testWriteEvents() throws Exception {
 		Event event = new Event(1L, "test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
