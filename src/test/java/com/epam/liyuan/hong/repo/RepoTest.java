@@ -13,17 +13,16 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.liyuan.hong.model.Event;
-import com.epam.liyuan.hong.repo.ItemRepo;
+import com.epam.liyuan.hong.model.Ticket;
+import com.epam.liyuan.hong.model.Ticket.Category;
+import com.epam.liyuan.hong.model.User;
 
 @RunWith(SpringRunner.class)
 @PropertySource("classpath:app.properties")
@@ -32,51 +31,43 @@ public class RepoTest {
 
 	@Autowired
 	ApplicationContext context;
-	
+
 	private ItemRepo itemRepo;
 
 	@Value(".")
 	private String classpath;
 
 	@Value("${app.prepareddata.file.event}")
-	private String eventsJson;
+	private String eventsFile;
+
+	@Value("${app.prepareddata.file.user}")
+	private String usersFile;
+
+	@Value("${app.prepareddata.file.ticket}")
+	private String ticketsFile;
+
+	@Test
+	public void testInitBean() {
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		assertNotNull(itemRepo);
+	}
 
 	@Test
 	public void testWriteEvents() {
-		Event event = new Event(1L, "test", new Date());
+		Event event = new Event(3L, "test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
-		map.put(2L, new Event(2L, "test", new Date()));
+		map.put(4L, new Event(4L, "test", new Date()));
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		assertNotNull(itemRepo);
 		assertTrue(itemRepo.saveEvents(map));
 		try {
-			assertTrue(Files.size(Paths.get("", eventsJson)) > 0);
+			assertTrue(Files.size(Paths.get("", eventsFile)) > 0);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			assertTrue(false);
 		}
 	}
-	
-	@Test
-	public void testWriteWithAdapter() {
-		Event event = new Event(1L, "test", new Date());
-		Map<Long, Event> map = new HashMap<>();
-		map.put(event.getId(), event);
-		map.put(2L, new Event(2L, "test", new Date()));
-		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		assertNotNull(itemRepo);
-		assertTrue(itemRepo.saveEventsWithAdapter(map));
-		try {
-			assertTrue(Files.size(Paths.get("", eventsJson)) > 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
-	
+
 	@Test
 	public void testReadEvents() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
@@ -89,8 +80,80 @@ public class RepoTest {
 		}
 		assertNotNull(map.size() == 2);
 	}
-	
+
 	@Test
+	public void testWriteUsers() {
+		Map<Long, User> map = new HashMap<>();
+		map.put(1L, new User(1L, "Liyuan", "liyuan@epam.com"));
+		map.put(2L, new User(2L, "Hong Liiyuan", "liyuan_hong@epam.com"));
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		assertTrue(itemRepo.saveUsers(map));
+		try {
+			assertTrue(Files.size(Paths.get("", usersFile)) > 0);
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	@Test
+	public void testReadUsers() {
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		Map<Long, User> map = new HashMap<>();
+		try {
+			map = itemRepo.loadUsers();
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		assertNotNull(map.size() == 2);
+	}
+
+	@Test
+	public void testWriteTickets() {
+		Map<Long, Ticket> map = new HashMap<>();
+		map.put(1L, new Ticket(1L, 1L, Category.BAR, 1));
+		map.put(2L, new Ticket(2L, 2L, Category.PREMIUM, 2));
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		assertTrue(itemRepo.saveTickets(map));
+		try {
+			assertTrue(Files.size(Paths.get("", ticketsFile)) > 0);
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	@Test
+	public void testReadTickets() {
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		Map<Long, Ticket> map = new HashMap<>();
+		try {
+			map = itemRepo.loadTickets();
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		assertNotNull(map.size() == 2);
+	}
+
+	public void testWriteWithAdapter() {
+		Event event = new Event(1L, "test", new Date());
+		Map<Long, Event> map = new HashMap<>();
+		map.put(event.getId(), event);
+		map.put(2L, new Event(2L, "test", new Date()));
+		itemRepo = (ItemRepo) context.getBean("itemRepo");
+		assertNotNull(itemRepo);
+		assertTrue(itemRepo.saveEventsWithAdapter(map));
+		try {
+			assertTrue(Files.size(Paths.get("", eventsFile)) > 0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
 	public void tesReadWithAdapter() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Event> map = new HashMap<>();
