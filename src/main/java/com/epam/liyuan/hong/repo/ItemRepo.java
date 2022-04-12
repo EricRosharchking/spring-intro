@@ -60,10 +60,13 @@ public class ItemRepo {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		int prefixLength = getPrefixLength(Event.class);
+		int prefixLength = getPrefix(Event.class).length();
 		Map<Long, Event> resMap = new HashMap<>();
-		tempMap.entrySet().stream().forEach(
-				entry -> resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Event) entry.getValue()));
+		if (!tempMap.isEmpty()) {
+			tempMap.entrySet().stream().forEach(System.out::println);
+			tempMap.entrySet().stream().forEach(entry -> resMap
+					.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Event) entry.getValue()));
+		}
 		return resMap;
 	}
 
@@ -85,17 +88,19 @@ public class ItemRepo {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		int prefixLength = getPrefixLength(User.class);
+		int prefixLength = getPrefix(User.class).length();
 		Map<Long, User> resMap = new HashMap<>();
-		tempMap.entrySet().stream().forEach(
-				entry -> resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (User) entry.getValue()));
+		if (!tempMap.isEmpty()) {
+			tempMap.entrySet().stream().forEach(
+					entry -> resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (User) entry.getValue()));
+		}
 		return resMap;
 	}
 
 	public boolean saveUsers(Map<Long, User> usersMap) {
 		JsonElement element = createJsonElementMap(User.class, usersMap);
 		try {
-			writeJsonObjectToResource(element, savedEventsResource);
+			writeJsonObjectToResource(element, savedUsersResource);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -110,17 +115,19 @@ public class ItemRepo {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		int prefixLength = getPrefixLength(Ticket.class);
+		int prefixLength = getPrefix(Ticket.class).length();
 		Map<Long, Ticket> resMap = new HashMap<>();
-		tempMap.entrySet().stream().forEach(
-				entry -> resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Ticket) entry.getValue()));
+		if (!tempMap.isEmpty()) {
+			tempMap.entrySet().stream().forEach(entry -> resMap
+					.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Ticket) entry.getValue()));
+		}
 		return resMap;
 	}
 
 	public boolean saveTickets(Map<Long, Ticket> ticketsMap) {
 		JsonElement element = createJsonElementMap(Ticket.class, ticketsMap);
 		try {
-			writeJsonObjectToResource(element, savedEventsResource);
+			writeJsonObjectToResource(element, savedTicketsResource);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -132,7 +139,7 @@ public class ItemRepo {
 			throws Exception {
 		JsonElement element = JsonParser.parseReader(readJsonObjectFromResource(resource));
 		Gson gson = getGson();
-		Type type = getTypeFromClass(entityClass);
+		Type type = getMapTypeFromClass(entityClass);
 		return gson.fromJson(element, type);
 	}
 
@@ -140,7 +147,7 @@ public class ItemRepo {
 		return new GsonBuilder().setDateFormat(SimpleDateFormat.DEFAULT).create();
 	}
 
-	private Type getTypeFromClass(Class<? extends Object> entityClass) {
+	private Type getMapTypeFromClass(Class<? extends Object> entityClass) {
 		if (entityClass == Event.class) {
 			return new TypeToken<Map<String, Event>>() {
 			}.getType();
@@ -154,22 +161,24 @@ public class ItemRepo {
 		return null;
 	}
 
-	private int getPrefixLength(Class<? extends Object> entityClass) {
+	private String getPrefix(Class<? extends Object> entityClass) {
 		if (entityClass == Event.class) {
-			return "event:".length();
+			return "event:";
 		} else if (entityClass == User.class) {
-			return "user:".length();
+			return "user:";
 		} else if (entityClass == Ticket.class) {
-			return "ticket:".length();
+			return "ticket:";
 		}
-		return 0;
+		return "";
 	}
 
 	private JsonElement createJsonElementMap(Class<? extends Object> entityClass, Map<Long, ? extends Object> map) {
 		Map<String, Object> tempMap = new HashMap<>();
-		Type type = getTypeFromClass(entityClass);
+		Type type = getMapTypeFromClass(entityClass);
+		String prefix = getPrefix(entityClass);
+		System.out.println(prefix);
 		for (Entry<Long, ? extends Object> entry : map.entrySet()) {
-			tempMap.put("event:" + entry.getKey(), entry.getValue());
+			tempMap.put(prefix + entry.getKey(), entry.getValue());
 		}
 		Gson gson = getGson();
 		return gson.toJsonTree(tempMap, type);
