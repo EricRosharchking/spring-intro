@@ -17,7 +17,7 @@ which should contain user, event, and booking-related functionality accordingly.
 
 [x] 2. Configure spring application context based on the XML config file. (0.5 point)
 
-[x] 3. Implement DAO objects for each of the domain model entities (User, Event, Ticket). They should store in and retrieve data from a common in-memory storage - java map. Each entity should be stored under a separate namespace, so you could list particular entity types. (0.5 point)
+[X] 3. Implement DAO objects for each of the domain model entities (User, Event, Ticket). They should store in and retrieve data from a common in-memory storage - java map. Each entity should be stored under a separate namespace, so you could list particular entity types. (0.5 point)
 
 [x] Example for ticket - map entry {"ticket:" à {}}.
 

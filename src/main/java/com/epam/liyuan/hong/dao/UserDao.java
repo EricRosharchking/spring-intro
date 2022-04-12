@@ -3,18 +3,21 @@ package com.epam.liyuan.hong.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.epam.liyuan.hong.model.Event;
-import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.User;
+import com.epam.liyuan.hong.repo.ItemRepo;
 
 @Component
 public class UserDao {
 
-	private Map<Long, User> userMap;
+	private ItemRepo itemRepo;
+	
+	private  Map<Long, User> userMap;
 
 	public void saveUser(User user) {
 		userMap.put(user.getId(), user);
@@ -30,6 +33,21 @@ public class UserDao {
 		}
 		userMap.remove(userId);
 		return true;
+	}
+	
+	@PostConstruct
+	private void loadAllUsers() {
+		userMap = itemRepo.loadUsersFromResource();
+	}
+
+	@PreDestroy
+	private void saveAllUsers() {
+		itemRepo.saveUsersToResource(userMap);
+	}
+
+	@Autowired
+	public void setItemRepo(ItemRepo itemRepo) {
+		this.itemRepo = itemRepo;
 	}
 
 }

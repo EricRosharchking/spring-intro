@@ -3,17 +3,20 @@ package com.epam.liyuan.hong.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.epam.liyuan.hong.model.Event;
 import com.epam.liyuan.hong.model.Ticket;
-import com.epam.liyuan.hong.model.User;
+import com.epam.liyuan.hong.repo.ItemRepo;
 
 @Component
 public class TicketDao {
-	
+
+	private ItemRepo itemRepo;
+
 	private Map<Long, Ticket> ticketMap;
 
 	public void saveTicket(Ticket ticket) {
@@ -30,6 +33,21 @@ public class TicketDao {
 		}
 		ticketMap.remove(ticketId);
 		return true;
+	}
+
+	@PostConstruct
+	private void loadTickets() {
+		ticketMap = itemRepo.loadTicketsFromResource();
+	}
+
+	@PreDestroy
+	private void saveAllTickets() {
+		itemRepo.saveTicketsToResource(ticketMap);
+	}
+
+	@Autowired
+	public void setItemRepo(ItemRepo itemRepo) {
+		this.itemRepo = itemRepo;
 	}
 
 }

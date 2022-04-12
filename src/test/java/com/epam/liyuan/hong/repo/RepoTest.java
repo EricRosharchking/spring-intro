@@ -54,12 +54,12 @@ public class RepoTest {
 
 	@Test
 	public void testWriteEvents() {
-		Event event = new Event(3L, "test", new Date());
+		Event event = new Event(1L, "test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
-		map.put(4L, new Event(4L, "test", new Date()));
+		map.put(2L, new Event(2L, "test", new Date()));
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		assertTrue(itemRepo.saveEvents(map));
+		assertTrue(itemRepo.saveEventsToResource(map));
 		try {
 			assertTrue(Files.size(Paths.get("", eventsFile)) > 0);
 		} catch (IOException e) {
@@ -73,7 +73,7 @@ public class RepoTest {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Event> map = new HashMap<>();
 		try {
-			map = itemRepo.loadEvents();
+			map = itemRepo.loadEventsFromResource();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -85,9 +85,9 @@ public class RepoTest {
 	public void testWriteUsers() {
 		Map<Long, User> map = new HashMap<>();
 		map.put(1L, new User(1L, "Liyuan", "liyuan@epam.com"));
-		map.put(2L, new User(2L, "Hong Liiyuan", "liyuan_hong@epam.com"));
+		map.put(2L, new User(2L, "Hong Liyuan", "liyuan_hong@epam.com"));
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		assertTrue(itemRepo.saveUsers(map));
+		assertTrue(itemRepo.saveUsersToResource(map));
 		try {
 			assertTrue(Files.size(Paths.get("", usersFile)) > 0);
 		} catch (IOException e) {
@@ -101,7 +101,7 @@ public class RepoTest {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, User> map = new HashMap<>();
 		try {
-			map = itemRepo.loadUsers();
+			map = itemRepo.loadUsersFromResource();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -115,7 +115,7 @@ public class RepoTest {
 		map.put(1L, new Ticket(1L, 1L, Category.BAR, 1));
 		map.put(2L, new Ticket(2L, 2L, Category.PREMIUM, 2));
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		assertTrue(itemRepo.saveTickets(map));
+		assertTrue(itemRepo.saveTicketsToResource(map));
 		try {
 			assertTrue(Files.size(Paths.get("", ticketsFile)) > 0);
 		} catch (IOException e) {
@@ -129,7 +129,7 @@ public class RepoTest {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Ticket> map = new HashMap<>();
 		try {
-			map = itemRepo.loadTickets();
+			map = itemRepo.loadTicketsFromResource();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -137,32 +137,19 @@ public class RepoTest {
 		assertNotNull(map.size() == 2);
 	}
 
-	public void testWriteWithAdapter() {
-		Event event = new Event(1L, "test", new Date());
-		Map<Long, Event> map = new HashMap<>();
-		map.put(event.getId(), event);
-		map.put(2L, new Event(2L, "test", new Date()));
-		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		assertNotNull(itemRepo);
-		assertTrue(itemRepo.saveEventsWithAdapter(map));
-		try {
-			assertTrue(Files.size(Paths.get("", eventsFile)) > 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
-
-	public void tesReadWithAdapter() {
-		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		Map<Long, Event> map = new HashMap<>();
-		try {
-			map = itemRepo.loadEventsWithAdapter();
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
-		assertNotNull(map.get(1L));
-	}
+	/*
+	 * public void testWriteWithAdapter() { Event event = new Event(1L, "test", new
+	 * Date()); Map<Long, Event> map = new HashMap<>(); map.put(event.getId(),
+	 * event); map.put(2L, new Event(2L, "test", new Date())); itemRepo = (ItemRepo)
+	 * context.getBean("itemRepo"); assertNotNull(itemRepo);
+	 * assertTrue(itemRepo.saveEventsWithAdapter(map)); try {
+	 * assertTrue(Files.size(Paths.get("", eventsFile)) > 0); } catch (IOException
+	 * e) { // TODO Auto-generated catch block e.printStackTrace();
+	 * assertTrue(false); } }
+	 * 
+	 * public void tesReadWithAdapter() { itemRepo = (ItemRepo)
+	 * context.getBean("itemRepo"); Map<Long, Event> map = new HashMap<>(); try {
+	 * map = itemRepo.loadEventsWithAdapter(); } catch (Exception e) {
+	 * e.printStackTrace(); assertTrue(false); } assertNotNull(map.get(1L)); }
+	 */
 }

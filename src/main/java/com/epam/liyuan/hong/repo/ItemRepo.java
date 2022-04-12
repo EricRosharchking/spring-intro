@@ -3,29 +3,19 @@ package com.epam.liyuan.hong.repo;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
-import org.springframework.data.annotation.Reference;
 import org.springframework.stereotype.Component;
 
 import com.epam.liyuan.hong.model.Event;
@@ -35,9 +25,7 @@ import com.epam.liyuan.hong.util.EventTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 @Component
@@ -53,7 +41,7 @@ public class ItemRepo {
 //	@Qualifier(value = "userFileResource")
 	private FileSystemResource savedUsersResource;
 
-	public Map<Long, Event> loadEvents() {
+	public Map<Long, Event> loadEventsFromResource() {
 		Map<String, Object> tempMap = new HashMap<>();
 		try {
 			tempMap = readTempMapFromResource(Event.class, savedEventsResource);
@@ -70,7 +58,7 @@ public class ItemRepo {
 		return resMap;
 	}
 
-	public boolean saveEvents(Map<Long, Event> eventsMap) {
+	public boolean saveEventsToResource(Map<Long, Event> eventsMap) {
 		JsonElement element = createJsonElementMap(Event.class, eventsMap);
 		try {
 			writeJsonObjectToResource(element, savedEventsResource);
@@ -81,7 +69,7 @@ public class ItemRepo {
 		return true;
 	}
 
-	public Map<Long, User> loadUsers() {
+	public Map<Long, User> loadUsersFromResource() {
 		Map<String, Object> tempMap = new HashMap<>();
 		try {
 			tempMap = readTempMapFromResource(User.class, savedUsersResource);
@@ -97,7 +85,7 @@ public class ItemRepo {
 		return resMap;
 	}
 
-	public boolean saveUsers(Map<Long, User> usersMap) {
+	public boolean saveUsersToResource(Map<Long, User> usersMap) {
 		JsonElement element = createJsonElementMap(User.class, usersMap);
 		try {
 			writeJsonObjectToResource(element, savedUsersResource);
@@ -108,7 +96,7 @@ public class ItemRepo {
 		return true;
 	}
 
-	public Map<Long, Ticket> loadTickets() {
+	public Map<Long, Ticket> loadTicketsFromResource() {
 		Map<String, Object> tempMap = new HashMap<>();
 		try {
 			tempMap = readTempMapFromResource(Ticket.class, savedTicketsResource);
@@ -124,7 +112,7 @@ public class ItemRepo {
 		return resMap;
 	}
 
-	public boolean saveTickets(Map<Long, Ticket> ticketsMap) {
+	public boolean saveTicketsToResource(Map<Long, Ticket> ticketsMap) {
 		JsonElement element = createJsonElementMap(Ticket.class, ticketsMap);
 		try {
 			writeJsonObjectToResource(element, savedTicketsResource);
@@ -218,7 +206,6 @@ public class ItemRepo {
 			System.out.println(resource.getDescription());
 			throw new RuntimeException("The file to save the Entities do not exist, or is not a file");
 		}
-//		WritableResource writableResource = (WritableResource) resource;
 		if (!(resource instanceof WritableResource) || !((WritableResource) resource).isWritable()) {
 			throw new RuntimeException("The file is not writable");
 		}
