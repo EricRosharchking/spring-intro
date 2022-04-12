@@ -3,6 +3,7 @@ package com.epam.liyuan.hong.facade.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.epam.liyuan.hong.exception.EntityNotFoundException;
 import com.epam.liyuan.hong.facade.BookingFacade;
 import com.epam.liyuan.hong.model.Event;
 import com.epam.liyuan.hong.model.Ticket;
@@ -27,98 +28,86 @@ public class BookingImpl implements BookingFacade {
 
 	@Override
 	public Event getEventById(long eventId) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventService.getEventById(eventId).orElseThrow(() -> supplyException());
 	}
 
 	@Override
 	public List<Event> getEventsByTitle(String title, int pageSize, int pageNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventService.getEventsByTitle(title, pageSize, pageNum);
 	}
 
 	@Override
 	public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventService.getEventsForDay(day, pageSize, pageNum);
 	}
 
 	@Override
 	public Event createEvent(Event event) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventService.createEvent(event);
 	}
 
 	@Override
 	public Event updateEvent(Event event) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventService.updateEvent(event);
 	}
 
 	@Override
 	public boolean deleteEvent(long eventId) {
-		// TODO Auto-generated method stub
-		return false;
+		return eventService.deleteEvent(eventId);
 	}
 
 	@Override
 	public User getUserById(long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		return userService.getUserById(userId).orElseThrow(() -> supplyException());
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		return userService.getUserByEmail(email);
 	}
 
 	@Override
 	public List<User> getUsersByName(String name, int pageSize, int pageNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return userService.getUsersByName(name, pageSize, pageNum);
 	}
 
 	@Override
 	public User createUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return userService.createUser(user);
 	}
 
 	@Override
 	public User updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return userService.updateUser(user);
 	}
 
 	@Override
 	public boolean deleteUser(long userId) {
-		// TODO Auto-generated method stub
-		return false;
+		return userService.deleteUser(userId);
 	}
 
 	@Override
 	public Ticket bookTicket(long userId, long eventId, int place, Category category) {
-		// TODO Auto-generated method stub
-		return null;
+		return ticketService.bookTicket(userId, eventId, place, category);
 	}
 
 	@Override
 	public List<Ticket> getBookedTickets(User user, int pageSize, int pageNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return ticketService.getBookedTickets(user, pageSize, pageNum);
 	}
 
 	@Override
 	public List<Ticket> getBookedTickets(Event event, int pageSize, int pageNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return ticketService.getBookedTickets(event, pageSize, pageNum);
 	}
 
 	@Override
 	public boolean cancelTicket(long ticketId) {
-		// TODO Auto-generated method stub
-		return false;
+		return ticketService.cancelTicket(ticketId);
+	}
+	
+	private EntityNotFoundException supplyException() {
+		return new EntityNotFoundException();
 	}
 
 }
