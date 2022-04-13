@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.liyuan.hong.model.Event;
+import com.epam.liyuan.hong.model.User;
 
 @RunWith(SpringRunner.class)
 @PropertySource("classpath:app.properties")
@@ -61,28 +62,68 @@ public class ServiceTest {
 
 	@Test
 	public void testCreateEvent() {
-		Event event = new Event(5L, "Unit Test Event", new Date());
+		Event entity = new Event(5L, "Unit Test Event", new Date());
 		int beforeCreateSize = eventService.getEventsByTitle("Unit Test Event", 10, 10).size();
-		assertEquals(eventService.createEvent(event), event);
+		assertEquals(eventService.createEvent(entity), entity);
 		assertTrue(eventService.getEventsByTitle("Unit Test Event", 10, 10).size() - beforeCreateSize == 1);
 	}
 
 	@Test
 	public void testUpdateEvent() {
-		Event event = new Event(1L, "Unit Test Event",
+		Event entity = new Event(1L, "Unit Test Event",
 				Date.from(LocalDate.of(2021, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-		System.out.println(event);
-		System.out.println(eventService.getEventById(1).get());
-		assertNotEquals(event, eventService.getEventById(1).get());
-		assertEquals(event, eventService.updateEvent(event));
+		assertNotEquals(entity, eventService.getEventById(1).get());
+		assertEquals(entity, eventService.updateEvent(entity));
 	}
 
 	@Test
 	public void testDeleteEvent() {
 		testCreateEvent();
-		Event event = new Event(5L, "Unit Test Event", new Date());
-		assertTrue(eventService.deleteEvent(event.getId()));
-		assertFalse(eventService.deleteEvent(event.getId()));
+		Event entity = new Event(5L, "Unit Test Event", new Date());
+		assertTrue(eventService.deleteEvent(entity.getId()));
+		assertFalse(eventService.deleteEvent(entity.getId()));
+	}
+
+	@Test
+	public void testGetUserById() {
+		assertTrue(userService.getUserById(1L).isPresent());
+		assertTrue(userService.getUserById(555L).isEmpty());
+	}
+
+	@Test
+	public void testGetUserByEmail() {
+		assertTrue(userService.getUserByEmail("liyuan_hong@epam.com").isPresent());
+		assertTrue(userService.getUserByEmail("liyuan_hong@gmail.com").isEmpty());
+	}
+
+	@Test
+	public void testGetUsersByName() {
+		assertTrue(userService.getUsersByName("hong", 1, 1).size() == 1);
+		assertTrue(userService.getUsersByName("liyuan", 5, 2).size() > 1);
+		assertTrue(userService.getUsersByName("NonExistingUser", 10, 10).isEmpty());
+	}
+
+	@Test
+	public void testCreateUser() {
+		User entity = new User(5L, "Unit Test User", "unit_test_user@example.com");
+		int beforeCreateSize = userService.getUsersByName("Unit Test User", 10, 10).size();
+		assertEquals(userService.createUser(entity), entity);
+		assertTrue(userService.getUsersByName("Unit Test User", 10, 10).size() - beforeCreateSize == 1);
+	}
+
+	@Test
+	public void testUpdateUser() {
+		User entity = new User(userService.getUserById(1).get().getId(), "Unit Test User", "unit_test_user@example.com");
+		assertNotEquals(entity, userService.getUserById(1).get());
+		assertEquals(entity, userService.updateUser(entity));
+	}
+
+	@Test
+	public void testDeleteUser() {
+		testCreateUser();
+		User entity = new User(5L, "Unit Test User", "unit_test_user2@example.com");
+		assertTrue(userService.deleteUser(entity.getId()));
+		assertFalse(userService.deleteUser(entity.getId()));
 	}
 
 }

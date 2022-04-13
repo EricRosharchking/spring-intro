@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,15 @@ public class UserService {
 	private UserDao userDao;
 
 	public Optional<User> getUserById(long userId) {
-		return Optional.ofNullable(retrieveUser(u -> u.getId() == userId).get(0));
+		return retrieveUser(u -> u.getId() == userId).stream().findFirst();
 	}
 
-	public User getUserByEmail(String email) {
-		return retrieveUser(u -> u.getEmail().equals(email)).get(0);
+	public Optional<User> getUserByEmail(String email) {
+		return retrieveUser(u -> u.getEmail().equals(email.toLowerCase())).stream().findFirst();
 	}
 
 	public List<User> getUsersByName(String name, int pageSize, int pageNum) {
-		List<User> users = retrieveUser(u -> u.getName().contains(name));
+		List<User> users = retrieveUser(u -> u.getName().toLowerCase().contains(name.toLowerCase()));
 		return getPagedUsers(users, pageSize, pageNum);
 	}
 
@@ -54,6 +55,10 @@ public class UserService {
 
 	public boolean deleteUser(long userId) {
 		return userDao.deleteUser(userId);
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
 	}
 
 }

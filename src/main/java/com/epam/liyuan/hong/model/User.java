@@ -1,5 +1,7 @@
 package com.epam.liyuan.hong.model;
 
+import java.util.Objects;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
@@ -20,7 +22,7 @@ public class User {
 		super();
 		this.id = id;
 		this.name = name;
-		this.email = email;
+		this.email = email.toLowerCase();
 	}
 
 	public long getId() {
@@ -50,6 +52,28 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(email, id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(email, other.email) && id == other.id && Objects.equals(name, other.name);
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + "]";
 	}
 
 }

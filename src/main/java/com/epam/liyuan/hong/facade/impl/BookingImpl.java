@@ -63,7 +63,7 @@ public class BookingImpl implements BookingFacade {
 
 	@Override
 	public User getUserByEmail(String email) {
-		return userService.getUserByEmail(email);
+		return userService.getUserByEmail(email).orElseThrow(() -> supplyException());
 	}
 
 	@Override

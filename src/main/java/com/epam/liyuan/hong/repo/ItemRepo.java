@@ -53,9 +53,10 @@ public class ItemRepo {
 		int prefixLength = getPrefix(Event.class).length();
 		Map<Long, Event> resMap = new HashMap<>();
 		if (!tempMap.isEmpty()) {
-			tempMap.entrySet().stream().forEach(System.out::println);
-			tempMap.entrySet().stream().forEach(entry -> resMap
-					.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Event) entry.getValue()));
+			tempMap.entrySet().stream().forEach(entry -> {
+				System.out.println(entry);
+				resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Event) entry.getValue());
+			});
 		}
 		return resMap;
 	}
@@ -83,8 +84,10 @@ public class ItemRepo {
 		int prefixLength = getPrefix(User.class).length();
 		Map<Long, User> resMap = new HashMap<>();
 		if (!tempMap.isEmpty()) {
-			tempMap.entrySet().stream().forEach(
-					entry -> resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (User) entry.getValue()));
+			tempMap.entrySet().stream().forEach(entry -> {
+				System.out.println(entry);
+				resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (User) entry.getValue());
+			});
 		}
 		return resMap;
 	}
@@ -112,8 +115,10 @@ public class ItemRepo {
 		int prefixLength = getPrefix(Ticket.class).length();
 		Map<Long, Ticket> resMap = new HashMap<>();
 		if (!tempMap.isEmpty()) {
-			tempMap.entrySet().stream().forEach(entry -> resMap
-					.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Ticket) entry.getValue()));
+			tempMap.entrySet().stream().forEach(entry -> {
+				System.out.println(entry);
+				resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Ticket) entry.getValue());
+			});
 		}
 		return resMap;
 	}
@@ -148,7 +153,9 @@ public class ItemRepo {
 		} else if (entityClass == User.class) {
 			return new TypeToken<Map<String, User>>() {
 			}.getType();
-		} else if (entityClass == Ticket.class) {
+		} else if (entityClass == Ticket.class)
+
+		{
 			return new TypeToken<Map<String, Ticket>>() {
 			}.getType();
 		}
