@@ -44,7 +44,9 @@ public class ItemRepo {
 	public Map<Long, Event> loadEventsFromResource() {
 		Map<String, Object> tempMap = new HashMap<>();
 		try {
-			tempMap = readTempMapFromResource(Event.class, savedEventsResource);
+			tempMap.putAll(readTempMapFromResource(Event.class, savedEventsResource));
+		} catch (NullPointerException e) {
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,7 +74,9 @@ public class ItemRepo {
 	public Map<Long, User> loadUsersFromResource() {
 		Map<String, Object> tempMap = new HashMap<>();
 		try {
-			tempMap = readTempMapFromResource(User.class, savedUsersResource);
+			tempMap.putAll(readTempMapFromResource(User.class, savedUsersResource));
+		} catch (NullPointerException e) {
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -99,7 +103,9 @@ public class ItemRepo {
 	public Map<Long, Ticket> loadTicketsFromResource() {
 		Map<String, Object> tempMap = new HashMap<>();
 		try {
-			tempMap = readTempMapFromResource(Ticket.class, savedTicketsResource);
+			tempMap.putAll(readTempMapFromResource(Ticket.class, savedTicketsResource));
+		} catch (NullPointerException e) {
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,7 +170,7 @@ public class ItemRepo {
 		Map<String, Object> tempMap = new HashMap<>();
 		Type type = getMapTypeFromClass(entityClass);
 		String prefix = getPrefix(entityClass);
-		System.out.println(prefix);
+//		System.out.println(prefix);
 		for (Entry<Long, ? extends Object> entry : map.entrySet()) {
 			tempMap.put(prefix + entry.getKey(), entry.getValue());
 		}

@@ -1,6 +1,7 @@
 package com.epam.liyuan.hong.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -17,10 +18,11 @@ public class UserDao {
 
 	private ItemRepo itemRepo;
 	
-	private  Map<Long, User> userMap;
+	private final Map<Long, User> userMap = new HashMap<>();;
 
-	public void saveUser(User user) {
+	public User saveUser(User user) {
 		userMap.put(user.getId(), user);
+		return user;
 	}
 
 	public List<User> getAllUsers() {
@@ -37,10 +39,10 @@ public class UserDao {
 	
 	@PostConstruct
 	private void loadAllUsers() {
-		userMap = itemRepo.loadUsersFromResource();
+		userMap.putAll(itemRepo.loadUsersFromResource());
 	}
 
-	@PreDestroy
+//	@PreDestroy
 	private void saveAllUsers() {
 		itemRepo.saveUsersToResource(userMap);
 	}

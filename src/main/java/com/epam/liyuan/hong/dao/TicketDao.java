@@ -1,6 +1,7 @@
 package com.epam.liyuan.hong.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -17,10 +18,11 @@ public class TicketDao {
 
 	private ItemRepo itemRepo;
 
-	private Map<Long, Ticket> ticketMap;
+	private final Map<Long, Ticket> ticketMap = new HashMap<>();
 
-	public void saveTicket(Ticket ticket) {
+	public Ticket saveTicket(Ticket ticket) {
 		ticketMap.put(ticket.getId(), ticket);
+		return ticket;
 	}
 
 	public List<Ticket> getAllTickets() {
@@ -37,10 +39,10 @@ public class TicketDao {
 
 	@PostConstruct
 	private void loadTickets() {
-		ticketMap = itemRepo.loadTicketsFromResource();
+		ticketMap.putAll(itemRepo.loadTicketsFromResource());
 	}
 
-	@PreDestroy
+//	@PreDestroy
 	private void saveAllTickets() {
 		itemRepo.saveTicketsToResource(ticketMap);
 	}

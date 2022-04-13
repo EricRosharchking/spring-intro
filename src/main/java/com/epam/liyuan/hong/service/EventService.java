@@ -42,16 +42,14 @@ public class EventService {
 	}
 
 	public Event createEvent(Event event) {
-		eventDao.saveEvent(event);
-		return event;
+		return eventDao.saveEvent(event);
 	}
 
 	public Event updateEvent(Event event) throws RuntimeException {
 		if (getEventById(event.getId()).isEmpty()) {
 			return null;
 		}
-		eventDao.saveEvent(event);
-		return event;
+		return eventDao.saveEvent(event);
 	}
 
 	public boolean deleteEvent(long eventId) {

@@ -1,5 +1,6 @@
 package com.epam.liyuan.hong.repo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -47,13 +48,29 @@ public class RepoTest {
 	private String ticketsFile;
 
 	@Test
+	public void testWrite() {
+		testInitBean();
+		testWriteEvents();
+		testWriteUsers();
+		testWriteTickets();
+	}
+	
+	@Test
+	public void testRead() {
+		testInitBean();
+		testReadEvents();
+		testReadTickets();
+		testReadUsers();
+	}
+	
+//	@Test
 	public void testInitBean() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertNotNull(itemRepo);
 	}
 
-	@Test
-	public void testWriteEvents() throws Exception {
+//	@Test
+	public void testWriteEvents() {
 		Event event = new Event(1L, "test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
@@ -66,9 +83,10 @@ public class RepoTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
+//		testReadEvents();
 	}
 
-	@Test
+//	@Test
 	public void testReadEvents() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Event> map = new HashMap<>();
@@ -78,10 +96,10 @@ public class RepoTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-		assertNotNull(map.size() == 2);
+		assertEquals(map.size(), 2);
 	}
 
-	@Test
+//	@Test
 	public void testWriteUsers() {
 		Map<Long, User> map = new HashMap<>();
 		map.put(1L, new User(1L, "Liyuan", "liyuan@epam.com"));
@@ -94,9 +112,10 @@ public class RepoTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
+//		testReadUsers();
 	}
 
-	@Test
+//	@Test
 	public void testReadUsers() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, User> map = new HashMap<>();
@@ -106,10 +125,10 @@ public class RepoTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-		assertNotNull(map.size() == 2);
+		assertEquals(map.size(), 2);
 	}
 
-	@Test
+//	@Test
 	public void testWriteTickets() {
 		Map<Long, Ticket> map = new HashMap<>();
 		map.put(1L, new Ticket(1L, 1L, Category.BAR, 1));
@@ -124,7 +143,7 @@ public class RepoTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testReadTickets() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Ticket> map = new HashMap<>();
@@ -134,7 +153,7 @@ public class RepoTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-		assertNotNull(map.size() == 2);
+		assertEquals(map.size(), 2);
 	}
 
 	/*
