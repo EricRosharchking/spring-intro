@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,17 @@ public class EventService {
 	private EventDao eventDao;
 
 	public Optional<Event> getEventById(long eventId) {
-		return Optional.ofNullable(retrieveEvent(e -> eventId == e.getId()).get(0));
+		return retrieveEvent(e -> eventId == e.getId()).stream().findFirst();
 	}
 
 	public List<Event> getEventsByTitle(String title, int pageSize, int pageNum) {
-		List<Event> events = retrieveEvent(e -> e.getTitle().contains(title));
+		List<Event> events = retrieveEvent(e -> e.getTitle().toLowerCase().contains(title.toLowerCase()));
 		return getPagedEvents(events, pageSize, pageNum);
 	}
 
+	//Date day.equals() will only return if the long value of getTime() is exactly the same
 	public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
-		List<Event> events = retrieveEvent(e -> day.equals(e.getDate()));
+		List<Event> events = retrieveEvent(e -> DateUtils.isSameDay(day, e.getDate()));
 		return getPagedEvents(events, pageSize, pageNum);
 	}
 
@@ -55,4 +57,9 @@ public class EventService {
 	public boolean deleteEvent(long eventId) {
 		return eventDao.deleteEvent(eventId);
 	}
+
+	public void setEventDao(EventDao eventDao) {
+		this.eventDao = eventDao;
+	}
+	
 }

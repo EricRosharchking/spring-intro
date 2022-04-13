@@ -1,10 +1,12 @@
 package com.epam.liyuan.hong.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONPropertyName;
 import org.springframework.data.annotation.Id;
 
@@ -53,6 +55,28 @@ public class Event {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	@Override
+	public String toString() {
+		return "Event [id=" + id + ", title=" + title + ", date=" + date + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(date, id, title);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Event other = (Event) obj;
+		return Objects.equals(date, other.date) && id == other.id && Objects.equals(title, other.title);
 	}
 
 }

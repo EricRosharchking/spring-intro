@@ -16,7 +16,7 @@ import com.epam.liyuan.hong.repo.ItemRepo;
 @Component
 public class EventDao {
 
-//	@Autowired
+	@Autowired
 	private ItemRepo itemRepo;
 
 	private final Map<Long, Event> eventMap = new HashMap<>();;
