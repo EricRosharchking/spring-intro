@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.epam.liyuan.hong.dao.TicketDao;
@@ -26,7 +25,7 @@ public class TicketService {
 		if (!retrieveTickets(t -> t.getPlace() == place).isEmpty()) {
 			throw new IllegalStateException("This place has already been booked");
 		}
-		Ticket ticket = new Ticket(userId, eventId, category, place);
+		Ticket ticket = new Ticket(eventId, userId, category, place);
 		return ticketDao.saveTicket(ticket);
 	}
 

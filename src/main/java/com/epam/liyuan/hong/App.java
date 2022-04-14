@@ -11,7 +11,7 @@ public class App {
 
 	public static void main(String[] args) {
 		try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("configuration.xml");) {
-		Environment env = context.getEnvironment();
+//		Environment env = context.getEnvironment();
 //		EventService e = (EventService) context.getBean("eventService");
 //		TicketService t = (TicketService) context.getBean("ticketService");
 //		UserService u = (UserService) context.getBean("userService");

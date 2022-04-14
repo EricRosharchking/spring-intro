@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +45,6 @@ public class EventTypeAdapter extends TypeAdapter<Map<Long, Event>> {
 		Map<Long, Event> result = new HashMap<>();
 		in.beginObject();
 		while (in.hasNext()) {
-//			long id = Long.valueOf(in.nextName().substring("event:".length()));
 			String name = in.nextName();
 			System.out.println(name);
 			long id = Long.valueOf(name.substring("event:".length()));
@@ -54,7 +52,6 @@ public class EventTypeAdapter extends TypeAdapter<Map<Long, Event>> {
 				Event event = readEvent(in);
 				result.put(id, event);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				throw new IOException();
 			}

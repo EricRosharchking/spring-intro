@@ -47,7 +47,7 @@ public class TicketDao {
 		ticketMap.keySet().stream().forEach(key -> logger.info("ticket key:" + key));
 	}
 
-//	@PreDestroy
+	@PreDestroy
 	private void saveAllTickets() {
 		itemRepo.saveTicketsToResource(ticketMap);
 	}

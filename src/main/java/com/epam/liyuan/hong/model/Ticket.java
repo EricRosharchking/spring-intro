@@ -2,11 +2,6 @@ package com.epam.liyuan.hong.model;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 /**
  * Created by maksym_govorischev.
  */
@@ -18,8 +13,6 @@ public class Ticket implements Cloneable {
 	}
 
 	private static long idSequence = 0;
-//	@Id
-//	@GeneratedValue
 	private long id;
 	private long eventId;
 	private long userId;

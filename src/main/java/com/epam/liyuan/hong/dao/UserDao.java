@@ -47,7 +47,7 @@ public class UserDao {
 		userMap.keySet().stream().forEach(key -> logger.info("User Key: " + key));
 	}
 
-//	@PreDestroy
+	@PreDestroy
 	private void saveAllUsers() {
 		itemRepo.saveUsersToResource(userMap);
 	}

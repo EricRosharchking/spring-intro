@@ -3,25 +3,13 @@ package com.epam.liyuan.hong.model;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-
-//import org.springframework.data.annotation.Id;
-
 /**
  * Created by maksym_govorischev.
  */
-//@Entity
-//@SequenceGenerator(name = "event_seq", initialValue = 0)
 public class Event implements Cloneable{
 
 	private static long idSequence = 0;
 
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "event_seq")
 	private long id;
 	private String title;
 	private Date date;

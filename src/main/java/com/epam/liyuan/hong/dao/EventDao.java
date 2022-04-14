@@ -42,17 +42,13 @@ public class EventDao {
 		return true;
 	}
 
-	public ItemRepo getItemRepo() {
-		return itemRepo;
-	}
-
 	@PostConstruct
 	private void loadEvents() {
 		eventMap.putAll(itemRepo.loadEventsFromResource());
 		eventMap.keySet().stream().forEach(k -> logger.info("Event Key: " + k));
 	}
 
-//	@PreDestroy
+	@PreDestroy
 	private void saveAllEvents() {
 		itemRepo.saveEventsToResource(eventMap);
 	}

@@ -9,22 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.epam.liyuan.hong.model.Event;
 import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.Ticket.Category;
@@ -84,7 +78,7 @@ public class ServiceTest {
 	@Order(5)
 	public void testUpdateEvent() {
 		Event entity = eventService.getEventById(1).get().clone();
-		entity.setTitle("Unit Test Event");
+		entity.setTitle("Update Test Event");
 		entity.setDate(Date.from(LocalDate.of(2021, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		assertNotEquals(entity, eventService.getEventById(1).get());
 		eventService.updateEvent(entity);
@@ -155,8 +149,8 @@ public class ServiceTest {
 	@Test
 	@Order(13)
 	public void testBookTicket() {
-		User user = new User("DummyUser", "dummy@example.com");
-		Event event = new Event("DummyEvent", new Date());
+		User user = userService.getUserById(5).get();
+		Event event = eventService.getEventById(1).get();
 		int place = (int) (user.getId() + event.getId());
 		assertNotNull(ticketService.bookTicket(user.getId(), event.getId(), place, Category.BAR));
 		assertThrowsExactly(IllegalStateException.class, () -> {
@@ -179,11 +173,8 @@ public class ServiceTest {
 		Event e1 = eventService.getEventById(0).get();
 		Event e2 = eventService.getEventById(1).get();
 		assertEquals(1, ticketService.getBookedTickets(e1, 10, 10).size());
-		assertEquals(1, ticketService.getBookedTickets(e2, 10, 10).size());
+		assertEquals(2, ticketService.getBookedTickets(e2, 10, 10).size());
 		Event e3 = new Event("event", new Date());
-		System.out.println(e1);
-		System.out.println(e2);
-		System.out.println(e3);
 		assertTrue(ticketService.getBookedTickets(e3, 10, 10).isEmpty());
 	}
 
