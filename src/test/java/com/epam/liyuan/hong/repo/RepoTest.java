@@ -11,26 +11,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.epam.liyuan.hong.model.Event;
 import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.Ticket.Category;
 import com.epam.liyuan.hong.model.User;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @PropertySource("classpath:app.properties")
 @ContextConfiguration("classpath:configuration.xml")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RepoTest {
 
 	@Autowired
@@ -51,29 +52,31 @@ public class RepoTest {
 	private String ticketsFile;
 
 //	@Test
-	public void testWrite() {
-		testInitBean();
-		testWriteEvents();
-		testWriteUsers();
-		testWriteTickets();
-	}
-	
+//	public void testWrite() {
+//		testInitBean();
+//		testWriteEvents();
+//		testWriteUsers();
+//		testWriteTickets();
+//	}
+
 //	@Test
-	public void testRead() {
-		testInitBean();
-		testReadEvents();
-		testReadTickets();
-		testReadUsers();
-	}
-	
+//	public void testRead() {
+//		testInitBean();
+//		testReadEvents();
+//		testReadTickets();
+//		testReadUsers();
+//	}
+
 	@Test
+	@Order(1)
 	public void testInitBean() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertNotNull(itemRepo);
 	}
 
 	@Test
-	public void testWriteEvents() {
+	@Order(2)
+	public void testWriteEvents() throws Exception {
 		Event event = new Event("test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
@@ -81,30 +84,21 @@ public class RepoTest {
 		map.put(newEvent.getId(), newEvent);
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertTrue(itemRepo.saveEventsToResource(map));
-		try {
-			assertTrue(Files.size(Paths.get("", eventsFile)) > 0);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
-//		testReadEvents();
+		assertTrue(Files.size(Paths.get("", eventsFile)) > 0);
 	}
 
 	@Test
+	@Order(3)
 	public void testReadEvents() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Event> map = new HashMap<>();
-		try {
-			map = itemRepo.loadEventsFromResource();
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		map = itemRepo.loadEventsFromResource();
 		assertEquals(map.size(), 2);
 	}
 
 	@Test
-	public void testWriteUsers() {
+	@Order(4)
+	public void testWriteUsers() throws IOException {
 		Map<Long, User> map = new HashMap<>();
 		User u1 = new User("Liyuan", "liyuan@epam.com");
 		User u2 = new User("Hong Liyuan", "liyuan_hong@epam.com");
@@ -112,30 +106,20 @@ public class RepoTest {
 		map.put(u2.getId(), u2);
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertTrue(itemRepo.saveUsersToResource(map));
-		try {
-			assertTrue(Files.size(Paths.get("", usersFile)) > 0);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
-//		testReadUsers();
+		assertTrue(Files.size(Paths.get("", usersFile)) > 0);
 	}
 
 	@Test
-	public void testReadUsers() {
+	@Order(5)
+	public void testReadUsers() throws IOException {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
-		Map<Long, User> map = new HashMap<>();
-		try {
-			map = itemRepo.loadUsersFromResource();
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		Map<Long, User> map = itemRepo.loadUsersFromResource();
 		assertEquals(map.size(), 2);
 	}
 
 	@Test
-	public void testWriteTickets() {
+	@Order(6)
+	public void testWriteTickets() throws IOException {
 		Map<Long, Ticket> map = new HashMap<>();
 		Ticket t1 = new Ticket(1L, 1L, Category.BAR, 1);
 		Ticket t2 = new Ticket(2L, 2L, Category.PREMIUM, 2);
@@ -143,24 +127,15 @@ public class RepoTest {
 		map.put(t2.getId(), t2);
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertTrue(itemRepo.saveTicketsToResource(map));
-		try {
-			assertTrue(Files.size(Paths.get("", ticketsFile)) > 0);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		assertTrue(Files.size(Paths.get("", ticketsFile)) > 0);
 	}
 
 	@Test
+	@Order(7)
 	public void testReadTickets() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Ticket> map = new HashMap<>();
-		try {
-			map = itemRepo.loadTicketsFromResource();
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		map = itemRepo.loadTicketsFromResource();
 		assertEquals(map.size(), 2);
 	}
 

@@ -27,7 +27,6 @@ public class EventService {
 		return getPagedEvents(events, pageSize, pageNum);
 	}
 
-	//Date day.equals() will only return if the long value of getTime() is exactly the same
 	public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
 		List<Event> events = retrieveEvent(e -> DateUtils.isSameDay(day, e.getDate()));
 		return getPagedEvents(events, pageSize, pageNum);

@@ -31,7 +31,11 @@ public class TicketService {
 	}
 
 	public List<Ticket> getBookedTickets(User user, int pageSize, int pageNum) {
-		List<Ticket> tickets = retrieveTickets(t -> t.getUserId() == user.getId()).stream()
+		List<Ticket> tickets = retrieveTickets(t -> t.getUserId() == user.getId());
+		if (tickets.size() <= 1) {
+			return tickets;
+		}
+		tickets = tickets.stream()
 				.sorted((t1, t2) -> eventService.getEventById(t2.getEventId()).get().getDate()
 						.compareTo(eventService.getEventById(t1.getEventId()).get().getDate()))
 				.collect(Collectors.toList());
@@ -39,7 +43,11 @@ public class TicketService {
 	}
 
 	public List<Ticket> getBookedTickets(Event event, int pageSize, int pageNum) {
-		List<Ticket> tickets = retrieveTickets(t -> t.getEventId() == event.getId()).stream()
+		List<Ticket> tickets = retrieveTickets(t -> t.getEventId() == event.getId());
+		if (tickets.size() <= 1) {
+			return tickets;
+		}
+		tickets = tickets.stream()
 				.sorted((t1, t2) -> userService.getUserById(t1.getUserId()).get().getEmail()
 						.compareTo(userService.getUserById(t2.getUserId()).get().getEmail()))
 				.collect(Collectors.toList());

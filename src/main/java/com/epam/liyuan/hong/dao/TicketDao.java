@@ -35,7 +35,6 @@ public class TicketDao {
 
 	public boolean deleteTicket(long ticketId) {
 		if (!ticketMap.containsKey(ticketId)) {
-			ticketMap.keySet().stream().forEach(key -> logger.info("key:" + key));
 			return false;
 		}
 		ticketMap.remove(ticketId);
@@ -45,6 +44,7 @@ public class TicketDao {
 	@PostConstruct
 	private void loadTickets() {
 		ticketMap.putAll(itemRepo.loadTicketsFromResource());
+		ticketMap.keySet().stream().forEach(key -> logger.info("ticket key:" + key));
 	}
 
 //	@PreDestroy

@@ -27,7 +27,7 @@ E.g. {"ticket:12345" à {"id" : 12345, "place" : 23, ......}}
 
 [x] 5. DAO with storage bean should be inserted into services beans using auto wiring. Services beans should be injected into the facade using constructor-based injections. The rest of the injections should be done in a setter-based way. (1 point)
 
-[ ] 6. Cover code with unit tests. (0.5 point)
+[X] 6. Cover code with unit tests. (0.5 point)
 
 [ ] 7. Code should contain proper logging. (0.5 point)
 

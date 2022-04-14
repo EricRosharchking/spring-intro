@@ -1,10 +1,11 @@
 package com.epam.liyuan.hong.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -12,12 +13,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.liyuan.hong.model.Event;
@@ -25,9 +30,10 @@ import com.epam.liyuan.hong.model.Ticket;
 import com.epam.liyuan.hong.model.Ticket.Category;
 import com.epam.liyuan.hong.model.User;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @PropertySource("classpath:app.properties")
 @ContextConfiguration("classpath:configuration.xml")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ServiceTest {
 
 	@Autowired
@@ -38,12 +44,14 @@ public class ServiceTest {
 	public UserService userService;
 
 	@Test
+	@Order(1)
 	public void testGetEventById() {
 		assertTrue(eventService.getEventById(1L).isPresent());
 		assertTrue(eventService.getEventById(555L).isEmpty());
 	}
 
 	@Test
+	@Order(2)
 	public void testGetEventsByTitle() {
 		assertTrue(eventService.getEventsByTitle("", 1, 1).size() == 1);
 		assertTrue(eventService.getEventsByTitle("test", 5, 2).size() > 1);
@@ -51,6 +59,7 @@ public class ServiceTest {
 	}
 
 	@Test
+	@Order(3)
 	public void testGetEventsForDay() {
 		assertNotEquals(0,
 				eventService.getEventsForDay(
@@ -63,6 +72,7 @@ public class ServiceTest {
 	}
 
 	@Test
+	@Order(4)
 	public void testCreateEvent() {
 		Event entity = new Event("Unit Test Event", new Date());
 		int beforeCreateSize = eventService.getEventsByTitle("Unit Test Event", 10, 10).size();
@@ -71,6 +81,7 @@ public class ServiceTest {
 	}
 
 	@Test
+	@Order(5)
 	public void testUpdateEvent() {
 		Event entity = eventService.getEventById(1).get().clone();
 		entity.setTitle("Unit Test Event");
@@ -81,33 +92,37 @@ public class ServiceTest {
 	}
 
 	@Test
+	@Order(6)
 	public void testDeleteEvent() {
-		testCreateEvent();
 		Event entity = eventService.getEventsByTitle("Unit Test Event", 10, 10).get(0);
 		assertTrue(eventService.deleteEvent(entity.getId()));
 		assertFalse(eventService.deleteEvent(entity.getId()));
 	}
 
 	@Test
+	@Order(7)
 	public void testGetUserById() {
 		assertTrue(userService.getUserById(1L).isPresent());
 		assertTrue(userService.getUserById(555L).isEmpty());
 	}
 
 	@Test
+	@Order(8)
 	public void testGetUserByEmail() {
 		assertTrue(userService.getUserByEmail("liyuan_hong@epam.com").isPresent());
 		assertTrue(userService.getUserByEmail("liyuan_hong@gmail.com").isEmpty());
 	}
 
 	@Test
+	@Order(9)
 	public void testGetUsersByName() {
 		assertEquals(1, userService.getUsersByName("hong", 1, 1).size());
-		assertTrue(userService.getUsersByName("liyuan", 5, 2).size() > 1);
+		assertEquals(3, userService.getUsersByName("", 5, 2).size());
 		assertTrue(userService.getUsersByName("NonExistingUser", 10, 10).isEmpty());
 	}
 
 	@Test
+	@Order(10)
 	public void testCreateUser() {
 		User entity = new User("Unit Test User", "unit_test_user@example.com");
 		int beforeCreateSize = userService.getUsersByName("Unit Test User", 10, 10).size();
@@ -116,36 +131,50 @@ public class ServiceTest {
 	}
 
 	@Test
+	@Order(11)
 	public void testUpdateUser() {
-		User entity = userService.getUserById(2).get().clone();
+		User user = new User("Tom Hanks", "hanks_tom@gmail.com");
+		long id = user.getId();
+		userService.createUser(user);
+		User entity = user.clone();
 		entity.setName("Unit Test User");
 		entity.setEmail("unit_test_user@example.com");
-		assertNotEquals(entity, userService.getUserById(2).get());
+		assertNotEquals(entity, userService.getUserById(id).get());
 		userService.updateUser(entity);
-		assertEquals(entity, userService.getUserById(2).get());
+		assertEquals(entity, userService.getUserById(id).get());
 	}
 
 	@Test
+	@Order(12)
 	public void testDeleteUser() {
-		User entity = userService.getUserById(2).get();
+		User entity = userService.getUserByEmail("unit_test_user@example.com").get();
 		assertTrue(userService.deleteUser(entity.getId()));
 		assertFalse(userService.deleteUser(entity.getId()));
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
+	@Order(13)
 	public void testBookTicket() {
-		ticketService.bookTicket(0, 0, 3, Category.BAR);
-		ticketService.bookTicket(0, 0, 3, Category.BAR);
+		User user = new User("DummyUser", "dummy@example.com");
+		Event event = new Event("DummyEvent", new Date());
+		int place = (int) (user.getId() + event.getId());
+		assertNotNull(ticketService.bookTicket(user.getId(), event.getId(), place, Category.BAR));
+		assertThrowsExactly(IllegalStateException.class, () -> {
+			ticketService.bookTicket(user.getId(), event.getId(), place, Category.BAR);
+		});
 	}
 
 	@Test
+	@Order(14)
 	public void testBookedTicketsByUser() {
-		assertEquals(2, ticketService.getBookedTickets(userService.getUserById(1).get(), 10, 10).size());
+		User user = userService.getUserById(1).get();
+		assertEquals(2, ticketService.getBookedTickets(user, 10, 10).size());
 		assertTrue(ticketService.getBookedTickets(new User("Unit Test User", "unit_test_user@example.com"), 10, 10)
 				.isEmpty());
 	}
 
 	@Test
+	@Order(15)
 	public void testBookedTicketsByEvent() {
 		Event e1 = eventService.getEventById(0).get();
 		Event e2 = eventService.getEventById(1).get();
@@ -159,6 +188,7 @@ public class ServiceTest {
 	}
 
 	@Test
+	@Order(16)
 	public void testCancelTicket() {
 		Ticket entity = ticketService.bookTicket(999, 999, 999, Category.PREMIUM);
 		assertTrue(ticketService.cancelTicket(entity.getId()));

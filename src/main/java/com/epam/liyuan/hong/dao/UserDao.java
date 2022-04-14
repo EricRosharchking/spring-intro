@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +18,10 @@ import com.epam.liyuan.hong.repo.ItemRepo;
 @Component
 public class UserDao {
 
-	private ItemRepo itemRepo;
+	private final Logger logger = LoggerFactory.getLogger(UserDao.class);
 	
+	private ItemRepo itemRepo;
+
 	private final Map<Long, User> userMap = new HashMap<>();;
 
 	public User saveUser(User user) {
@@ -36,10 +40,11 @@ public class UserDao {
 		userMap.remove(userId);
 		return true;
 	}
-	
+
 	@PostConstruct
 	private void loadAllUsers() {
 		userMap.putAll(itemRepo.loadUsersFromResource());
+		userMap.keySet().stream().forEach(key -> logger.info("User Key: " + key));
 	}
 
 //	@PreDestroy

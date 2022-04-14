@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ import com.epam.liyuan.hong.repo.ItemRepo;
 
 @Component
 public class EventDao {
+
+	private final Logger logger = LoggerFactory.getLogger(EventDao.class);
 
 	@Autowired
 	private ItemRepo itemRepo;
@@ -45,8 +49,9 @@ public class EventDao {
 	@PostConstruct
 	private void loadEvents() {
 		eventMap.putAll(itemRepo.loadEventsFromResource());
+		eventMap.keySet().stream().forEach(k -> logger.info("Event Key: " + k));
 	}
-	
+
 //	@PreDestroy
 	private void saveAllEvents() {
 		itemRepo.saveEventsToResource(eventMap);

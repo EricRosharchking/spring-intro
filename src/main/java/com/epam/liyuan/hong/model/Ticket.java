@@ -17,7 +17,7 @@ public class Ticket implements Cloneable {
 		STANDARD, PREMIUM, BAR
 	}
 
-	private static long idSequence;
+	private static long idSequence = 0;
 //	@Id
 //	@GeneratedValue
 	private long id;
