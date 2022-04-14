@@ -2,35 +2,42 @@ package com.epam.liyuan.hong.model;
 
 import java.util.Objects;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 /**
  * Created by maksym_govorischev on 14/03/14.
  */
-public class User {
+//@Entity
+public class User implements Cloneable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private static long idSequence = 0;
+
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
 	private String email;
 
-	public User(long id, String name, String email) {
+	public User(String name, String email) {
 		super();
-		this.id = id;
+		id = generateId();
 		this.name = name;
 		this.email = email.toLowerCase();
 	}
 
-	public long getId() {
-		return id;
+	private static synchronized long generateId() {
+		return idSequence++;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public static void setSequence(long sequence) {
+		idSequence = ++sequence;
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public String getName() {
@@ -74,6 +81,18 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + "]";
+	}
+
+	@Override
+	public User clone() {
+		return new User(this.id, this.name, this.email);
+	}
+
+	private User(long id, String name, String email) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
 	}
 
 }

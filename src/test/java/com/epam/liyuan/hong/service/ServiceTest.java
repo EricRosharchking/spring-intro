@@ -21,6 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.liyuan.hong.model.Event;
+import com.epam.liyuan.hong.model.Ticket;
+import com.epam.liyuan.hong.model.Ticket.Category;
 import com.epam.liyuan.hong.model.User;
 
 @RunWith(SpringRunner.class)
@@ -50,19 +52,19 @@ public class ServiceTest {
 
 	@Test
 	public void testGetEventsForDay() {
-		assertTrue(!eventService
-				.getEventsForDay(Date.from(LocalDate.of(2022, 04, 13).atStartOfDay(ZoneId.systemDefault()).toInstant()),
-						10, 10)
-				.isEmpty());
-		assertTrue(eventService
-				.getEventsForDay(Date.from(LocalDate.of(2022, 04, 11).atStartOfDay(ZoneId.systemDefault()).toInstant()),
-						10, 10)
-				.isEmpty());
+		assertNotEquals(0,
+				eventService.getEventsForDay(
+						Date.from(LocalDate.of(2022, 04, 13).atStartOfDay(ZoneId.systemDefault()).toInstant()), 10, 10)
+						.size());
+		assertEquals(0,
+				eventService.getEventsForDay(
+						Date.from(LocalDate.of(2022, 04, 11).atStartOfDay(ZoneId.systemDefault()).toInstant()), 10, 10)
+						.size());
 	}
 
 	@Test
 	public void testCreateEvent() {
-		Event entity = new Event(5L, "Unit Test Event", new Date());
+		Event entity = new Event("Unit Test Event", new Date());
 		int beforeCreateSize = eventService.getEventsByTitle("Unit Test Event", 10, 10).size();
 		assertEquals(eventService.createEvent(entity), entity);
 		assertTrue(eventService.getEventsByTitle("Unit Test Event", 10, 10).size() - beforeCreateSize == 1);
@@ -70,16 +72,18 @@ public class ServiceTest {
 
 	@Test
 	public void testUpdateEvent() {
-		Event entity = new Event(1L, "Unit Test Event",
-				Date.from(LocalDate.of(2021, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		Event entity = eventService.getEventById(1).get().clone();
+		entity.setTitle("Unit Test Event");
+		entity.setDate(Date.from(LocalDate.of(2021, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		assertNotEquals(entity, eventService.getEventById(1).get());
-		assertEquals(entity, eventService.updateEvent(entity));
+		eventService.updateEvent(entity);
+		assertEquals(entity, eventService.getEventById(1).get());
 	}
 
 	@Test
 	public void testDeleteEvent() {
 		testCreateEvent();
-		Event entity = new Event(5L, "Unit Test Event", new Date());
+		Event entity = eventService.getEventsByTitle("Unit Test Event", 10, 10).get(0);
 		assertTrue(eventService.deleteEvent(entity.getId()));
 		assertFalse(eventService.deleteEvent(entity.getId()));
 	}
@@ -98,14 +102,14 @@ public class ServiceTest {
 
 	@Test
 	public void testGetUsersByName() {
-		assertTrue(userService.getUsersByName("hong", 1, 1).size() == 1);
+		assertEquals(1, userService.getUsersByName("hong", 1, 1).size());
 		assertTrue(userService.getUsersByName("liyuan", 5, 2).size() > 1);
 		assertTrue(userService.getUsersByName("NonExistingUser", 10, 10).isEmpty());
 	}
 
 	@Test
 	public void testCreateUser() {
-		User entity = new User(5L, "Unit Test User", "unit_test_user@example.com");
+		User entity = new User("Unit Test User", "unit_test_user@example.com");
 		int beforeCreateSize = userService.getUsersByName("Unit Test User", 10, 10).size();
 		assertEquals(userService.createUser(entity), entity);
 		assertTrue(userService.getUsersByName("Unit Test User", 10, 10).size() - beforeCreateSize == 1);
@@ -113,17 +117,52 @@ public class ServiceTest {
 
 	@Test
 	public void testUpdateUser() {
-		User entity = new User(userService.getUserById(1).get().getId(), "Unit Test User", "unit_test_user@example.com");
-		assertNotEquals(entity, userService.getUserById(1).get());
-		assertEquals(entity, userService.updateUser(entity));
+		User entity = userService.getUserById(2).get().clone();
+		entity.setName("Unit Test User");
+		entity.setEmail("unit_test_user@example.com");
+		assertNotEquals(entity, userService.getUserById(2).get());
+		userService.updateUser(entity);
+		assertEquals(entity, userService.getUserById(2).get());
 	}
 
 	@Test
 	public void testDeleteUser() {
-		testCreateUser();
-		User entity = new User(5L, "Unit Test User", "unit_test_user2@example.com");
+		User entity = userService.getUserById(2).get();
 		assertTrue(userService.deleteUser(entity.getId()));
 		assertFalse(userService.deleteUser(entity.getId()));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testBookTicket() {
+		ticketService.bookTicket(0, 0, 3, Category.BAR);
+		ticketService.bookTicket(0, 0, 3, Category.BAR);
+	}
+
+	@Test
+	public void testBookedTicketsByUser() {
+		assertEquals(2, ticketService.getBookedTickets(userService.getUserById(1).get(), 10, 10).size());
+		assertTrue(ticketService.getBookedTickets(new User("Unit Test User", "unit_test_user@example.com"), 10, 10)
+				.isEmpty());
+	}
+
+	@Test
+	public void testBookedTicketsByEvent() {
+		Event e1 = eventService.getEventById(0).get();
+		Event e2 = eventService.getEventById(1).get();
+		assertEquals(1, ticketService.getBookedTickets(e1, 10, 10).size());
+		assertEquals(1, ticketService.getBookedTickets(e2, 10, 10).size());
+		Event e3 = new Event("event", new Date());
+		System.out.println(e1);
+		System.out.println(e2);
+		System.out.println(e3);
+		assertTrue(ticketService.getBookedTickets(e3, 10, 10).isEmpty());
+	}
+
+	@Test
+	public void testCancelTicket() {
+		Ticket entity = ticketService.bookTicket(999, 999, 999, Category.PREMIUM);
+		assertTrue(ticketService.cancelTicket(entity.getId()));
+		assertFalse(ticketService.cancelTicket(entity.getId()));
 	}
 
 }

@@ -36,7 +36,7 @@ public class EntityDaoTest {
 	// CRUD
 	@Test
 	public void testCreateEvent() {
-		Event event = new Event(999L, "Test Event", new Date());
+		Event event = new Event("Test Event", new Date());
 		assertEquals(event, eventDao.saveEvent(event));
 	}
 
@@ -65,7 +65,7 @@ public class EntityDaoTest {
 
 	@Test
 	public void testCreateUser() {
-		User user = new User(999L, "Test User", "test@example.com");
+		User user = new User("Test User", "test@example.com");
 		assertEquals(user, userDao.saveUser(user));
 	}
 

@@ -54,10 +54,11 @@ public class ItemRepo {
 		Map<Long, Event> resMap = new HashMap<>();
 		if (!tempMap.isEmpty()) {
 			tempMap.entrySet().stream().forEach(entry -> {
-				System.out.println(entry);
+//				System.out.println(entry);
 				resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Event) entry.getValue());
 			});
 		}
+		Event.setSequence(resMap.size());
 		return resMap;
 	}
 
@@ -85,10 +86,11 @@ public class ItemRepo {
 		Map<Long, User> resMap = new HashMap<>();
 		if (!tempMap.isEmpty()) {
 			tempMap.entrySet().stream().forEach(entry -> {
-				System.out.println(entry);
+//				System.out.println(entry);
 				resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (User) entry.getValue());
 			});
 		}
+		User.setSequence(resMap.size());
 		return resMap;
 	}
 
@@ -116,10 +118,11 @@ public class ItemRepo {
 		Map<Long, Ticket> resMap = new HashMap<>();
 		if (!tempMap.isEmpty()) {
 			tempMap.entrySet().stream().forEach(entry -> {
-				System.out.println(entry);
+//				System.out.println(entry);
 				resMap.put(Long.valueOf(entry.getKey().substring(prefixLength)), (Ticket) entry.getValue());
 			});
 		}
+		Ticket.setSequence(resMap.size());
 		return resMap;
 	}
 

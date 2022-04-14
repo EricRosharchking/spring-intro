@@ -11,8 +11,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +30,7 @@ import com.epam.liyuan.hong.model.User;
 @RunWith(SpringRunner.class)
 @PropertySource("classpath:app.properties")
 @ContextConfiguration("classpath:configuration.xml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RepoTest {
 
 	@Autowired
@@ -47,7 +50,7 @@ public class RepoTest {
 	@Value("${app.prepareddata.file.ticket}")
 	private String ticketsFile;
 
-	@Test
+//	@Test
 	public void testWrite() {
 		testInitBean();
 		testWriteEvents();
@@ -55,7 +58,7 @@ public class RepoTest {
 		testWriteTickets();
 	}
 	
-	@Test
+//	@Test
 	public void testRead() {
 		testInitBean();
 		testReadEvents();
@@ -63,18 +66,19 @@ public class RepoTest {
 		testReadUsers();
 	}
 	
-//	@Test
+	@Test
 	public void testInitBean() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertNotNull(itemRepo);
 	}
 
-//	@Test
+	@Test
 	public void testWriteEvents() {
-		Event event = new Event(1L, "test", new Date());
+		Event event = new Event("test", new Date());
 		Map<Long, Event> map = new HashMap<>();
 		map.put(event.getId(), event);
-		map.put(2L, new Event(2L, "test", new Date()));
+		Event newEvent = new Event("test event", new Date());
+		map.put(newEvent.getId(), newEvent);
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertTrue(itemRepo.saveEventsToResource(map));
 		try {
@@ -86,7 +90,7 @@ public class RepoTest {
 //		testReadEvents();
 	}
 
-//	@Test
+	@Test
 	public void testReadEvents() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Event> map = new HashMap<>();
@@ -99,11 +103,13 @@ public class RepoTest {
 		assertEquals(map.size(), 2);
 	}
 
-//	@Test
+	@Test
 	public void testWriteUsers() {
 		Map<Long, User> map = new HashMap<>();
-		map.put(1L, new User(1L, "Liyuan", "liyuan@epam.com"));
-		map.put(2L, new User(2L, "Hong Liyuan", "liyuan_hong@epam.com"));
+		User u1 = new User("Liyuan", "liyuan@epam.com");
+		User u2 = new User("Hong Liyuan", "liyuan_hong@epam.com");
+		map.put(u1.getId(), u1);
+		map.put(u2.getId(), u2);
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertTrue(itemRepo.saveUsersToResource(map));
 		try {
@@ -115,7 +121,7 @@ public class RepoTest {
 //		testReadUsers();
 	}
 
-//	@Test
+	@Test
 	public void testReadUsers() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, User> map = new HashMap<>();
@@ -128,11 +134,13 @@ public class RepoTest {
 		assertEquals(map.size(), 2);
 	}
 
-//	@Test
+	@Test
 	public void testWriteTickets() {
 		Map<Long, Ticket> map = new HashMap<>();
-		map.put(1L, new Ticket(1L, 1L, Category.BAR, 1));
-		map.put(2L, new Ticket(2L, 2L, Category.PREMIUM, 2));
+		Ticket t1 = new Ticket(1L, 1L, Category.BAR, 1);
+		Ticket t2 = new Ticket(2L, 2L, Category.PREMIUM, 2);
+		map.put(t1.getId(), t1);
+		map.put(t2.getId(), t2);
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		assertTrue(itemRepo.saveTicketsToResource(map));
 		try {
@@ -143,7 +151,7 @@ public class RepoTest {
 		}
 	}
 
-//	@Test
+	@Test
 	public void testReadTickets() {
 		itemRepo = (ItemRepo) context.getBean("itemRepo");
 		Map<Long, Ticket> map = new HashMap<>();

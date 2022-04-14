@@ -27,8 +27,7 @@ public class TicketService {
 			throw new IllegalStateException("This place has already been booked");
 		}
 		Ticket ticket = new Ticket(userId, eventId, category, place);
-		ticketDao.saveTicket(ticket);
-		return ticket;
+		return ticketDao.saveTicket(ticket);
 	}
 
 	public List<Ticket> getBookedTickets(User user, int pageSize, int pageNum) {
@@ -52,18 +51,32 @@ public class TicketService {
 	}
 
 	private List<Ticket> getPagedEvents(List<Ticket> tickets, int pageSize, int pageNum) {
+		if (tickets.isEmpty()) {
+			return tickets;
+		}
 		int firstIndex = (tickets.size() - 1) / pageSize * pageSize;
 		int lastIndex = firstIndex + pageSize > tickets.size() ? tickets.size() : firstIndex + pageSize;
 		return tickets.subList(firstIndex, lastIndex);
 	}
 
 	public boolean cancelTicket(long ticketId) {
-		List<Ticket> ticket = retrieveTickets(t -> t.getId() == ticketId);
-		if (ticket.isEmpty()) {
-			return false;
-		}
-		ticketDao.deleteTicket(ticketId);
-		return true;
+//		List<Ticket> ticket = retrieveTickets(t -> t.getId() == ticketId);
+//		if (ticket.isEmpty()) {
+//			return false;
+//		}
+		return ticketDao.deleteTicket(ticketId);
+	}
+
+	public void setTicketDao(TicketDao ticketDao) {
+		this.ticketDao = ticketDao;
+	}
+
+	public void setEventService(EventService eventService) {
+		this.eventService = eventService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 
 }

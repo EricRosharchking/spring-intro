@@ -35,6 +35,9 @@ public class UserService {
 	}
 
 	private List<User> getPagedUsers(List<User> events, int pageSize, int pageNum) {
+		if (events.isEmpty()) {
+			return events;
+		}
 		int firstIndex = (events.size() - 1) / pageSize * pageSize;
 		int lastIndex = firstIndex + pageSize > events.size() ? events.size() : firstIndex + pageSize;
 		return events.subList(firstIndex, lastIndex);

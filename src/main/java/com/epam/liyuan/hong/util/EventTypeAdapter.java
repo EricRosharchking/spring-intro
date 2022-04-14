@@ -86,7 +86,7 @@ public class EventTypeAdapter extends TypeAdapter<Map<Long, Event>> {
 			}
 		}
 		in.endObject();
-		return new Event(id, title, date);
+		return new Event(title, date);
 	}
 
 }

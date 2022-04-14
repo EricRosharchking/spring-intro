@@ -1,1 +1,1 @@
-{"ticket:1":{"id":0,"eventId":1,"userId":1,"category":"BAR","place":1},"ticket:2":{"id":0,"eventId":2,"userId":2,"category":"PREMIUM","place":2}}
+{"ticket:1":{"id":1,"eventId":0,"userId":1,"category":"PREMIUM","place":2},"ticket:0":{"id":0,"eventId":1,"userId":1,"category":"BAR","place":1}}

@@ -3,29 +3,42 @@ package com.epam.liyuan.hong.model;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.json.JSONPropertyName;
-import org.springframework.data.annotation.Id;
+//import org.springframework.data.annotation.Id;
 
 /**
  * Created by maksym_govorischev.
  */
-public class Event {
+//@Entity
+//@SequenceGenerator(name = "event_seq", initialValue = 0)
+public class Event implements Cloneable{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private static long idSequence = 0;
+
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "event_seq")
 	private long id;
 	private String title;
 	private Date date;
 
-	public Event(long id, String title, Date date) {
+	public Event(String title, Date date) {
 		super();
-		this.id = id;
+		id = generateId();
 		this.title = title;
 		this.date = date;
+	}
+
+	private static synchronized long generateId() {
+		return idSequence++;
+	}
+	
+	public static void setSequence(long sequence) {
+		idSequence = ++sequence;
 	}
 
 	/**
@@ -35,10 +48,6 @@ public class Event {
 	 */
 	public long getId() {
 		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getTitle() {
@@ -77,6 +86,18 @@ public class Event {
 			return false;
 		Event other = (Event) obj;
 		return Objects.equals(date, other.date) && id == other.id && Objects.equals(title, other.title);
+	}
+
+	@Override
+	public Event clone() {
+		return new Event(this.id, this.title, this.date);
+	}
+	
+	private Event(long id, String title, Date date) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.date = date;
 	}
 
 }

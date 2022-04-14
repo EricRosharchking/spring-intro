@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ import com.epam.liyuan.hong.repo.ItemRepo;
 
 @Component
 public class TicketDao {
+	
+	private final Logger logger = LoggerFactory.getLogger(TicketDao.class);
 
 	private ItemRepo itemRepo;
 
@@ -31,6 +35,7 @@ public class TicketDao {
 
 	public boolean deleteTicket(long ticketId) {
 		if (!ticketMap.containsKey(ticketId)) {
+			ticketMap.keySet().stream().forEach(key -> logger.info("key:" + key));
 			return false;
 		}
 		ticketMap.remove(ticketId);
